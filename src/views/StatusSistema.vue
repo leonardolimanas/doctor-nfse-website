@@ -312,19 +312,29 @@ const parseKumaStatus = (html: string): StatusService[] => {
       
       // Se encontrou um nome de serviço válido, adicionar aos serviços
       if (serviceName && serviceName.length > 3) {
-        // Verificar se já não temos este serviço (evitar duplicatas)
-        const existingService = services.find(s => s.name.toLowerCase() === serviceName.toLowerCase())
-        if (!existingService) {
-          const service: StatusService = {
-            name: serviceName,
-            status,
-            description: fullText.length > 100 ? fullText.substring(0, 100) + '...' : fullText,
-            uptime,
-            responseTime
+        // Filtrar nomes que são claramente não-serviços
+        const invalidNames = ['sorry', 'javascript', 'noscript', 'enable', 'browser', 'support', 'website']
+        const isInvalidName = invalidNames.some(invalid => 
+          serviceName.toLowerCase().includes(invalid)
+        )
+        
+        if (!isInvalidName) {
+          // Verificar se já não temos este serviço (evitar duplicatas)
+          const existingService = services.find(s => s.name.toLowerCase() === serviceName.toLowerCase())
+          if (!existingService) {
+            const service: StatusService = {
+              name: serviceName,
+              status,
+              description: fullText.length > 100 ? fullText.substring(0, 100) + '...' : fullText,
+              uptime,
+              responseTime
+            }
+            
+            services.push(service)
+            console.log(`Serviço encontrado: ${serviceName} - ${status}`)
           }
-          
-          services.push(service)
-          console.log(`Serviço encontrado: ${serviceName} - ${status}`)
+        } else {
+          console.log(`Nome inválido filtrado: ${serviceName}`)
         }
       }
     })
@@ -387,30 +397,104 @@ const loadStatus = async () => {
   loading.value = true
   
   try {
-    // Usar um proxy CORS para contornar limitações
-    const proxyUrl = 'https://api.allorigins.win/get?url='
-    const targetUrl = encodeURIComponent('https://kuma.doctornfse.com.br/status/doctornfse')
+    // Lista de proxies CORS para tentar
+    const proxyUrls = [
+      'https://api.allorigins.win/get?url=',
+      'https://cors-anywhere.herokuapp.com/',
+      'https://thingproxy.freeboard.io/fetch/',
+      'https://api.codetabs.com/v1/proxy?quest='
+    ]
     
-    const response = await fetch(proxyUrl + targetUrl, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
+    let htmlContent = ''
+    let success = false
+    
+    // Tentar cada proxy até encontrar um que funcione
+    for (const proxyUrl of proxyUrls) {
+      try {
+        console.log(`Tentando proxy: ${proxyUrl}`)
+        
+        const targetUrl = encodeURIComponent('https://kuma.doctornfse.com.br/status/doctornfse')
+        const response = await fetch(proxyUrl + targetUrl, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+          }
+        })
+        
+        if (response.ok) {
+          const data = await response.json()
+          
+          if (data.contents) {
+            htmlContent = data.contents
+            success = true
+            console.log('Proxy funcionou:', proxyUrl)
+            break
+          } else if (data.status === 'success' && data.data) {
+            htmlContent = data.data
+            success = true
+            console.log('Proxy funcionou (formato alternativo):', proxyUrl)
+            break
+          }
+        }
+      } catch (proxyError) {
+        console.log(`Proxy falhou: ${proxyUrl}`, proxyError)
+        continue
       }
-    })
+    }
     
-    if (response.ok) {
-      const data = await response.json()
+    // Se nenhum proxy funcionou, tentar uma abordagem alternativa
+    if (!success) {
+      console.log('Tentando abordagem alternativa...')
       
-      if (data.contents) {
-        // Fazer parse do HTML retornado
-        const services = parseKumaStatus(data.contents)
+      try {
+        // Tentar fazer uma requisição direta com headers específicos
+        const response = await fetch('https://kuma.doctornfse.com.br/status/doctornfse', {
+          method: 'GET',
+          headers: {
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+            'Accept-Language': 'pt-BR,pt;q=0.9,en;q=0.8',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache'
+          }
+        })
+        
+        if (response.ok) {
+          htmlContent = await response.text()
+          success = true
+          console.log('Requisição direta funcionou')
+        }
+      } catch (directError) {
+        console.log('Requisição direta falhou:', directError)
+      }
+    }
+    
+    if (success && htmlContent) {
+      // Verificar se o conteúdo contém noscript (página de fallback)
+      if (htmlContent.includes('noscript') || htmlContent.includes('JavaScript') || htmlContent.includes('Sorry, you don\'t seem to have JavaScript')) {
+        console.log('Detectado conteúdo noscript - página de fallback')
+        throw new Error('Página de fallback detectada - JavaScript necessário')
+      }
+      
+      // Verificar se o conteúdo parece ser uma página de status válida
+      if (!htmlContent.includes('status') && !htmlContent.includes('uptime') && !htmlContent.includes('operational')) {
+        console.log('Conteúdo não parece ser uma página de status válida')
+        throw new Error('Conteúdo inválido - não é uma página de status')
+      }
+      
+      // Fazer parse do HTML retornado
+      const services = parseKumaStatus(htmlContent)
+      
+      if (services.length > 0) {
         statusData.value = services
         lastUpdate.value = new Date().toLocaleString('pt-BR')
+        console.log('Status carregado com sucesso:', services.length, 'serviços')
       } else {
-        throw new Error('Conteúdo não encontrado')
+        throw new Error('Nenhum serviço encontrado no conteúdo')
       }
     } else {
-      throw new Error(`HTTP ${response.status}`)
+      throw new Error('Não foi possível carregar o conteúdo da página')
     }
     
   } catch (error) {
