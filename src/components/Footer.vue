@@ -49,7 +49,15 @@
           <ul class="footer-links">
             <li><router-link to="/ajuda">Central de Ajuda</router-link></li>
             <li><router-link to="/documentacao">Documentação</router-link></li>
-            <li><router-link to="/status">Status do Sistema</router-link></li>
+            <li>
+              <a 
+                href="https://kuma.doctornfse.com.br/status/doctornfse" 
+                target="_blank" 
+                rel="noopener noreferrer"
+              >
+                Status do Sistema
+              </a>
+            </li>
             <li><router-link to="/contato">Suporte Técnico</router-link></li>
           </ul>
         </div>
