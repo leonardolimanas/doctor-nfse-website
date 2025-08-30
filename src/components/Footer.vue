@@ -57,10 +57,10 @@
         <div class="footer-section">
           <h3 class="footer-title">Legal</h3>
           <ul class="footer-links">
-            <li><router-link to="/privacidade">Política de Privacidade</router-link></li>
-            <li><router-link to="/termos">Termos de Uso</router-link></li>
+            <li><router-link to="/politica-privacidade">Política de Privacidade</router-link></li>
+            <li><router-link to="/termos-uso">Termos de Uso</router-link></li>
             <li><router-link to="/lgpd">LGPD</router-link></li>
-            <li><router-link to="/cookies">Política de Cookies</router-link></li>
+            <li><router-link to="/politica-cookies">Política de Cookies</router-link></li>
           </ul>
         </div>
       </div>

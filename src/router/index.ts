@@ -6,6 +6,11 @@ import Sobre from '../views/Sobre.vue'
 import Contato from '../views/Contato.vue'
 import Login from '../views/Login.vue'
 import Demo from '../views/Demo.vue'
+import PoliticaPrivacidade from '../views/PoliticaPrivacidade.vue'
+import TermosUso from '../views/TermosUso.vue'
+import LGPD from '../views/LGPD.vue'
+import PoliticaCookies from '../views/PoliticaCookies.vue'
+import StatusSistema from '../views/StatusSistema.vue'
 
 const routes = [
   {
@@ -49,6 +54,36 @@ const routes = [
     name: 'Demo',
     component: Demo,
     meta: { title: 'Solicitar Demo - Doctor NFS-e' }
+  },
+  {
+    path: '/politica-privacidade',
+    name: 'PoliticaPrivacidade',
+    component: PoliticaPrivacidade,
+    meta: { title: 'Política de Privacidade - Doctor NFS-e' }
+  },
+  {
+    path: '/termos-uso',
+    name: 'TermosUso',
+    component: TermosUso,
+    meta: { title: 'Termos de Uso - Doctor NFS-e' }
+  },
+  {
+    path: '/lgpd',
+    name: 'LGPD',
+    component: LGPD,
+    meta: { title: 'LGPD - Doctor NFS-e' }
+  },
+  {
+    path: '/politica-cookies',
+    name: 'PoliticaCookies',
+    component: PoliticaCookies,
+    meta: { title: 'Política de Cookies - Doctor NFS-e' }
+  },
+  {
+    path: '/status',
+    name: 'StatusSistema',
+    component: StatusSistema,
+    meta: { title: 'Status do Sistema - Doctor NFS-e' }
   }
 ]
 
