@@ -15,9 +15,9 @@
 docker build -t doctor-nfse-website .
 
 # Teste local
-docker run -d --name doctor-nfse-test -p 3000:80 doctor-nfse-website
+docker run -d --name doctor-nfse-test -p 3004:80 doctor-nfse-website
 
-# Acesse: http://localhost:3000
+# Acesse: http://localhost:3004
 ```
 
 ### 2. Deploy no Coolify
@@ -37,7 +37,7 @@ docker run -d --name doctor-nfse-test -p 3000:80 doctor-nfse-website
 4. Selecione branch: `main`
 5. Configure:
    - **Build Pack**: Dockerfile
-   - **Port**: 3000
+   - **Port**: 3004
    - **Health Check Path**: /
 6. Deploy!
 
@@ -49,7 +49,7 @@ NODE_ENV=production
 ```
 
 ### Portas
-- **Aplicação**: 3000
+- **Aplicação**: 3004
 - **Nginx**: 80 (interno)
 
 ### Health Check
@@ -83,7 +83,7 @@ docker build --no-cache -t doctor-nfse-website .
 ### Container não inicia
 ```bash
 # Verificar se a porta está disponível
-netstat -tulpn | grep 3000
+netstat -tulpn | grep 3004
 
 # Verificar logs do container
 docker logs doctor-nfse-website

@@ -2,9 +2,9 @@ name: doctor-nfse-website
 type: application
 buildPack: dockerfile
 dockerfilePath: ./Dockerfile
-port: 3000
+port: 3004
 healthCheckPath: /
-healthCheckPort: 3000
+healthCheckPort: 3004
 installCommand: npm ci
 buildCommand: npm run build
 startCommand: nginx -g "daemon off;"
