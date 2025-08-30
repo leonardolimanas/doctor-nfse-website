@@ -1,0 +1,12 @@
+name: doctor-nfse-website
+type: application
+buildPack: dockerfile
+dockerfilePath: ./Dockerfile
+port: 3000
+healthCheckPath: /
+healthCheckPort: 3000
+installCommand: npm ci
+buildCommand: npm run build
+startCommand: nginx -g "daemon off;"
+environmentVariables:
+  - NODE_ENV=production
