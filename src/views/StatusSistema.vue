@@ -214,111 +214,173 @@ const parseKumaStatus = (html: string): StatusService[] => {
     const parser = new DOMParser()
     const doc = parser.parseFromString(html, 'text/html')
     
-    // Procurar por elementos de status (adaptar conforme a estrutura do Kuma)
-    const statusElements = doc.querySelectorAll('.status-item, .service-item, [class*="status"]')
+    console.log('Analisando estrutura HTML do Kuma...')
     
-    statusElements.forEach((element) => {
-      const nameElement = element.querySelector('h3, h4, .name, [class*="name"]')
-      const statusElement = element.querySelector('.status, .state, [class*="status"]')
-      const descriptionElement = element.querySelector('.description, p, [class*="desc"]')
-      const uptimeElement = element.querySelector('.uptime, [class*="uptime"]')
-      const responseElement = element.querySelector('.response, [class*="response"]')
+    // Primeiro, vamos tentar identificar a estrutura real da página Kuma
+    // Procurar por diferentes padrões comuns em páginas de status
+    
+    // Padrão 1: Elementos com classes específicas do Kuma
+    let statusElements: NodeListOf<Element> | Element[] = doc.querySelectorAll('.status-item, .service-item, .monitor-item, [class*="status"], [class*="service"], [class*="monitor"]')
+    
+    // Padrão 2: Se não encontrar, procurar por elementos que contenham informações de status
+    if (statusElements.length === 0) {
+      statusElements = doc.querySelectorAll('div, section, article')
+      console.log('Procurando por elementos alternativos...')
+    }
+    
+    // Padrão 3: Procurar por elementos que contenham texto relacionado a status
+    if (statusElements.length === 0) {
+      const allElements = doc.querySelectorAll('*')
+      const statusRelatedElements: Element[] = []
       
-      if (nameElement) {
-        const name = nameElement.textContent?.trim() || 'Serviço Desconhecido'
-        const statusText = statusElement?.textContent?.trim().toLowerCase() || 'unknown'
-        
-        let status: StatusService['status'] = 'unknown'
-        if (statusText.includes('operational') || statusText.includes('operacional') || statusText.includes('up')) {
-          status = 'operational'
-        } else if (statusText.includes('warning') || statusText.includes('atenção') || statusText.includes('down')) {
-          status = 'warning'
-        } else if (statusText.includes('error') || statusText.includes('erro') || statusText.includes('offline')) {
-          status = 'error'
+      allElements.forEach(element => {
+        const text = element.textContent?.toLowerCase() || ''
+        if (text.includes('operational') || text.includes('down') || text.includes('up') || 
+            text.includes('status') || text.includes('uptime') || text.includes('response')) {
+          statusRelatedElements.push(element)
         }
-        
-        const service: StatusService = {
-          name,
-          status,
-          description: descriptionElement?.textContent?.trim(),
-          uptime: uptimeElement?.textContent?.trim(),
-          responseTime: responseElement?.textContent?.trim()
+      })
+      
+      statusElements = statusRelatedElements.length > 0 ? 
+        statusRelatedElements.slice(0, 10) : // Limitar a 10 elementos para análise
+        doc.querySelectorAll('body > *') // Último recurso: elementos diretos do body
+    }
+    
+    console.log(`Encontrados ${statusElements.length} elementos para análise`)
+    
+    // Analisar cada elemento encontrado
+    statusElements.forEach((element, index) => {
+      console.log(`Analisando elemento ${index + 1}:`, element.tagName, element.className)
+      
+      // Extrair texto completo do elemento para análise
+      const fullText = element.textContent?.trim() || ''
+      console.log(`Texto do elemento ${index + 1}:`, fullText.substring(0, 100) + '...')
+      
+      // Procurar por padrões de nome de serviço
+      const namePatterns = [
+        /([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)/g, // Palavras capitalizadas
+        /([A-Za-z]+(?:\s+[A-Za-z]+)*)/g, // Qualquer texto
+      ]
+      
+      let serviceName = ''
+      for (const pattern of namePatterns) {
+        const matches = fullText.match(pattern)
+        if (matches && matches.length > 0) {
+          // Filtrar nomes que parecem ser de serviços
+          const potentialNames = matches.filter(match => 
+            match.length > 3 && 
+            !match.toLowerCase().includes('status') &&
+            !match.toLowerCase().includes('uptime') &&
+            !match.toLowerCase().includes('response') &&
+            !match.toLowerCase().includes('operational') &&
+            !match.toLowerCase().includes('down') &&
+            !match.toLowerCase().includes('up')
+          )
+          
+          if (potentialNames.length > 0) {
+            serviceName = potentialNames[0]
+            break
+          }
         }
-        
-        services.push(service)
+      }
+      
+      // Procurar por status
+      let status: StatusService['status'] = 'unknown'
+      const statusText = fullText.toLowerCase()
+      
+      if (statusText.includes('operational') || statusText.includes('operacional') || statusText.includes('up') || statusText.includes('online')) {
+        status = 'operational'
+      } else if (statusText.includes('warning') || statusText.includes('atenção') || statusText.includes('degraded')) {
+        status = 'warning'
+      } else if (statusText.includes('error') || statusText.includes('erro') || statusText.includes('offline') || statusText.includes('down')) {
+        status = 'error'
+      }
+      
+      // Procurar por uptime
+      let uptime = ''
+      const uptimeMatch = fullText.match(/(\d+\.?\d*%?\s*uptime|uptime\s*:?\s*(\d+\.?\d*%?))/i)
+      if (uptimeMatch) {
+        uptime = uptimeMatch[1] || uptimeMatch[2] || ''
+      }
+      
+      // Procurar por tempo de resposta
+      let responseTime = ''
+      const responseMatch = fullText.match(/(\d+\.?\d*\s*ms|response\s*:?\s*(\d+\.?\d*\s*ms))/i)
+      if (responseMatch) {
+        responseTime = responseMatch[1] || responseMatch[2] || ''
+      }
+      
+      // Se encontrou um nome de serviço válido, adicionar aos serviços
+      if (serviceName && serviceName.length > 3) {
+        // Verificar se já não temos este serviço (evitar duplicatas)
+        const existingService = services.find(s => s.name.toLowerCase() === serviceName.toLowerCase())
+        if (!existingService) {
+          const service: StatusService = {
+            name: serviceName,
+            status,
+            description: fullText.length > 100 ? fullText.substring(0, 100) + '...' : fullText,
+            uptime,
+            responseTime
+          }
+          
+          services.push(service)
+          console.log(`Serviço encontrado: ${serviceName} - ${status}`)
+        }
       }
     })
     
-    // Se não encontrou elementos específicos, criar dados padrão
+    console.log(`Total de serviços encontrados: ${services.length}`)
+    
+    // Se não encontrou nenhum serviço, tentar uma abordagem mais genérica
     if (services.length === 0) {
-      services.push(
-        {
-          name: 'Doctor NFSe - Sistema Principal',
-          status: 'operational',
-          description: 'Sistema principal de gestão de NFSe',
-          uptime: '99.9%',
-          responseTime: '< 200ms'
-        },
-        {
-          name: 'API de Integração',
-          status: 'operational',
-          description: 'API REST para integrações',
-          uptime: '99.8%',
-          responseTime: '< 100ms'
-        },
-        {
-          name: 'Banco de Dados',
-          status: 'operational',
-          description: 'Sistema de armazenamento de dados',
-          uptime: '99.9%',
-          responseTime: '< 50ms'
-        },
-        {
-          name: 'Serviços de E-mail',
-          status: 'operational',
-          description: 'Sistema de envio de e-mails',
-          uptime: '99.7%',
-          responseTime: '< 500ms'
+      console.log('Nenhum serviço encontrado, analisando estrutura geral...')
+      
+      // Procurar por qualquer texto que pareça ser um nome de serviço
+      const bodyText = doc.body.textContent || ''
+      const lines = bodyText.split('\n').filter(line => line.trim().length > 0)
+      
+      lines.forEach(line => {
+        const trimmedLine = line.trim()
+        if (trimmedLine.length > 5 && trimmedLine.length < 100) {
+          // Verificar se a linha parece ser um nome de serviço
+          const hasStatusKeywords = /status|uptime|response|operational|down|up/i.test(trimmedLine)
+          const hasServiceKeywords = /api|service|system|database|email|web|app|server/i.test(trimmedLine)
+          
+          if (hasStatusKeywords || hasServiceKeywords) {
+            // Extrair nome do serviço (primeira parte da linha)
+            const serviceName = trimmedLine.split(/[:\-\s]/)[0]
+            if (serviceName && serviceName.length > 3) {
+              const status: StatusService['status'] = 
+                /operational|up|online/i.test(trimmedLine) ? 'operational' :
+                /warning|degraded/i.test(trimmedLine) ? 'warning' :
+                /error|down|offline/i.test(trimmedLine) ? 'error' : 'unknown'
+              
+              const service: StatusService = {
+                name: serviceName,
+                status,
+                description: trimmedLine
+              }
+              
+              services.push(service)
+              console.log(`Serviço genérico encontrado: ${serviceName} - ${status}`)
+            }
+          }
         }
-      )
+      })
     }
+    
+    // Se ainda não encontrou nada, retornar array vazio para mostrar fallback
+    if (services.length === 0) {
+      console.log('Nenhum serviço encontrado, retornando array vazio')
+      return []
+    }
+    
+    return services
     
   } catch (error) {
     console.error('Erro ao fazer parse do HTML:', error)
-    // Retornar dados padrão em caso de erro
-    return [
-      {
-        name: 'Doctor NFSe - Sistema Principal',
-        status: 'operational',
-        description: 'Sistema principal de gestão de NFSe',
-        uptime: '99.9%',
-        responseTime: '< 200ms'
-      },
-      {
-        name: 'API de Integração',
-        status: 'operational',
-        description: 'API REST para integrações',
-        uptime: '99.8%',
-        responseTime: '< 100ms'
-      },
-      {
-        name: 'Banco de Dados',
-        status: 'operational',
-        description: 'Sistema de armazenamento de dados',
-        uptime: '99.9%',
-        responseTime: '< 50ms'
-      },
-      {
-        name: 'Serviços de E-mail',
-        status: 'operational',
-        description: 'Sistema de envio de e-mails',
-        uptime: '99.7%',
-        responseTime: '< 500ms'
-      }
-    ]
+    return []
   }
-  
-  return services
 }
 
 const loadStatus = async () => {
@@ -353,37 +415,8 @@ const loadStatus = async () => {
     
   } catch (error) {
     console.error('Erro ao carregar status:', error)
-    // Em caso de erro, usar dados padrão
-    statusData.value = [
-      {
-        name: 'Doctor NFSe - Sistema Principal',
-        status: 'operational',
-        description: 'Sistema principal de gestão de NFSe',
-        uptime: '99.9%',
-        responseTime: '< 200ms'
-      },
-      {
-        name: 'API de Integração',
-        status: 'operational',
-        description: 'API REST para integrações',
-        uptime: '99.8%',
-        responseTime: '< 100ms'
-      },
-      {
-        name: 'Banco de Dados',
-        status: 'operational',
-        description: 'Sistema de armazenamento de dados',
-        uptime: '99.9%',
-        responseTime: '< 50ms'
-      },
-      {
-        name: 'Serviços de E-mail',
-        status: 'operational',
-        description: 'Sistema de envio de e-mails',
-        uptime: '99.7%',
-        responseTime: '< 500ms'
-      }
-    ]
+    // Em caso de erro, retornar array vazio para mostrar fallback
+    statusData.value = []
     lastUpdate.value = new Date().toLocaleString('pt-BR')
   } finally {
     loading.value = false
