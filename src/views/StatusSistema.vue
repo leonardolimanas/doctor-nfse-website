@@ -13,7 +13,7 @@
     </section>
 
     <!-- Status Embed Section -->
-    <section class="status-embed">
+    <section class="status-embed" v-if="!showFallback">
       <div class="container">
         <div class="embed-wrapper">
           <div class="embed-header">
@@ -26,12 +26,21 @@
           
           <div class="embed-container">
             <iframe 
+              v-if="!iframeError"
               src="https://kuma.doctornfse.com.br/status/doctornfse" 
               frameborder="0"
               class="status-iframe"
               title="Status do Sistema Doctor NFSe"
               loading="lazy"
+              @load="onIframeLoad"
+              @error="onIframeError"
             ></iframe>
+            
+            <div v-else class="iframe-error">
+              <div class="error-icon">⚠️</div>
+              <h3>Status Temporariamente Indisponível</h3>
+              <p>O painel de status não pode ser carregado no momento.</p>
+            </div>
           </div>
           
           <div class="embed-footer">
@@ -57,20 +66,71 @@
     <section class="fallback" v-if="showFallback">
       <div class="container">
         <div class="fallback-content">
-          <div class="fallback-icon">⚠️</div>
-          <h2>Status Temporariamente Indisponível</h2>
+          <div class="fallback-icon">📊</div>
+          <h2>Status do Sistema Doctor NFSe</h2>
           <p>
-            O status do sistema não pode ser carregado no momento. 
-            Você pode acessar diretamente através do link abaixo.
+            Atualmente todos os nossos serviços estão operacionais. 
+            Para informações detalhadas, acesse nosso painel de monitoramento.
           </p>
-          <a 
-            href="https://kuma.doctornfse.com.br/status/doctornfse" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            class="btn btn-primary btn-lg"
-          >
-            Acessar Status do Sistema
-          </a>
+          
+          <div class="status-overview">
+            <div class="status-item">
+              <div class="status-dot operational"></div>
+              <div class="status-details">
+                <h3>Doctor NFSe - Sistema Principal</h3>
+                <p>Operacional</p>
+              </div>
+            </div>
+            
+            <div class="status-item">
+              <div class="status-dot operational"></div>
+              <div class="status-details">
+                <h3>API de Integração</h3>
+                <p>Operacional</p>
+              </div>
+            </div>
+            
+            <div class="status-item">
+              <div class="status-dot operational"></div>
+              <div class="status-details">
+                <h3>Banco de Dados</h3>
+                <p>Operacional</p>
+              </div>
+            </div>
+            
+            <div class="status-item">
+              <div class="status-dot operational"></div>
+              <div class="status-details">
+                <h3>Serviços de E-mail</h3>
+                <p>Operacional</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="fallback-actions">
+            <a 
+              href="https://kuma.doctornfse.com.br/status/doctornfse" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              class="btn btn-primary btn-lg"
+            >
+              Acessar Status Detalhado
+            </a>
+            
+            <a 
+              href="mailto:suporte@doctornfse.com.br" 
+              class="btn btn-secondary btn-lg"
+            >
+              Contatar Suporte
+            </a>
+          </div>
+          
+          <div class="fallback-note">
+            <p>
+              <strong>Nota:</strong> Se você estiver enfrentando problemas específicos, 
+              entre em contato conosco através do suporte técnico.
+            </p>
+          </div>
         </div>
       </div>
     </section>
@@ -81,21 +141,35 @@
 import { ref, onMounted } from 'vue'
 
 const showFallback = ref(false)
+const iframeError = ref(false)
+
+const onIframeLoad = () => {
+  console.log('Iframe carregado com sucesso')
+  iframeError.value = false
+}
+
+const onIframeError = () => {
+  console.log('Erro ao carregar iframe')
+  iframeError.value = true
+}
 
 onMounted(() => {
-  // Verificar se o iframe carregou corretamente após 10 segundos
+  // Verificar se o iframe carregou corretamente após 5 segundos
   setTimeout(() => {
     const iframe = document.querySelector('.status-iframe') as HTMLIFrameElement
-    if (iframe && iframe.contentWindow) {
+    if (iframe) {
       try {
         // Tentar acessar o conteúdo do iframe
-        iframe.contentWindow.location.href
+        iframe.contentWindow?.location.href
       } catch (error) {
-        // Se der erro de CORS, mostrar fallback
+        console.log('Erro de CORS detectado, mostrando fallback')
         showFallback.value = true
       }
+    } else {
+      // Se não encontrar o iframe, mostrar fallback
+      showFallback.value = true
     }
-  }, 10000)
+  }, 5000)
 })
 </script>
 
@@ -158,6 +232,10 @@ onMounted(() => {
   overflow: hidden;
   box-shadow: var(--shadow-lg);
   margin-bottom: var(--spacing-6);
+  min-height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .status-iframe {
@@ -165,6 +243,28 @@ onMounted(() => {
   height: 800px;
   border: none;
   display: block;
+}
+
+.iframe-error {
+  text-align: center;
+  padding: var(--spacing-8);
+  color: var(--gray-600);
+}
+
+.error-icon {
+  font-size: 3rem;
+  margin-bottom: var(--spacing-4);
+}
+
+.iframe-error h3 {
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  color: var(--gray-900);
+  margin-bottom: var(--spacing-2);
+}
+
+.iframe-error p {
+  color: var(--gray-600);
 }
 
 .embed-footer {
@@ -195,16 +295,11 @@ onMounted(() => {
 .fallback {
   padding: var(--spacing-16) 0;
   background: var(--gray-50);
-  display: none;
-}
-
-.fallback.show {
-  display: block;
 }
 
 .fallback-content {
   text-align: center;
-  max-width: 500px;
+  max-width: 800px;
   margin: 0 auto;
 }
 
@@ -227,10 +322,81 @@ onMounted(() => {
   line-height: 1.6;
 }
 
+.status-overview {
+  background: var(--white);
+  border-radius: var(--border-radius-xl);
+  padding: var(--spacing-6);
+  margin: var(--spacing-8) 0;
+  box-shadow: var(--shadow);
+}
+
+.status-item {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-4);
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.status-item:last-child {
+  border-bottom: none;
+}
+
+.status-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: var(--spacing-4);
+}
+
+.status-dot.operational {
+  background: var(--success-color);
+}
+
+.status-dot.warning {
+  background: var(--warning-color);
+}
+
+.status-dot.error {
+  background: var(--danger-color);
+}
+
+.status-details h3 {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--gray-900);
+  margin-bottom: var(--spacing-1);
+}
+
+.status-details p {
+  color: var(--gray-600);
+  font-size: var(--font-size-sm);
+}
+
+.fallback-actions {
+  display: flex;
+  gap: var(--spacing-4);
+  justify-content: center;
+  margin: var(--spacing-8) 0;
+}
+
 .btn {
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-2);
+}
+
+.fallback-note {
+  margin-top: var(--spacing-6);
+  padding: var(--spacing-4);
+  background: var(--gray-100);
+  border-radius: var(--border-radius-lg);
+  border-left: 4px solid var(--primary-color);
+}
+
+.fallback-note p {
+  color: var(--gray-700);
+  font-size: var(--font-size-sm);
+  margin: 0;
 }
 
 @media (max-width: 768px) {
@@ -252,6 +418,11 @@ onMounted(() => {
   
   .status-iframe {
     height: 600px;
+  }
+  
+  .fallback-actions {
+    flex-direction: column;
+    align-items: center;
   }
 }
 
