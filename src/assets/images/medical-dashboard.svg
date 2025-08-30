@@ -1,0 +1,62 @@
+<svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="400" height="300" fill="#f8fafc"/>
+  
+  <!-- Dashboard Container -->
+  <rect x="30" y="50" width="340" height="220" rx="10" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+  
+  <!-- Header -->
+  <rect x="30" y="50" width="340" height="40" rx="10" fill="#1e293b"/>
+  <text x="200" y="75" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#ffffff">Dashboard Médico</text>
+  
+  <!-- Chart Section -->
+  <rect x="50" y="110" width="140" height="80" rx="5" fill="#f1f5f9" stroke="#e2e8f0" stroke-width="1"/>
+  
+  <!-- Bar Chart -->
+  <rect x="60" y="170" width="15" height="15" fill="#3b82f6"/>
+  <rect x="80" y="165" width="15" height="20" fill="#10b981"/>
+  <rect x="100" y="160" width="15" height="25" fill="#f59e0b"/>
+  <rect x="120" y="155" width="15" height="30" fill="#ef4444"/>
+  <rect x="140" y="150" width="15" height="35" fill="#8b5cf6"/>
+  
+  <!-- Line Chart -->
+  <rect x="210" y="110" width="140" height="80" rx="5" fill="#f1f5f9" stroke="#e2e8f0" stroke-width="1"/>
+  <circle cx="230" cy="140" r="3" fill="#3b82f6"/>
+  <circle cx="250" cy="135" r="3" fill="#3b82f6"/>
+  <circle cx="270" cy="145" r="3" fill="#3b82f6"/>
+  <circle cx="290" cy="130" r="3" fill="#3b82f6"/>
+  <circle cx="310" cy="140" r="3" fill="#3b82f6"/>
+  <path d="M 230 140 L 250 135 L 270 145 L 290 130 L 310 140" stroke="#3b82f6" stroke-width="2" fill="none"/>
+  
+  <!-- Metrics Cards -->
+  <rect x="50" y="210" width="80" height="40" rx="5" fill="#3b82f6"/>
+  <text x="90" y="225" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#ffffff">Pacientes</text>
+  <text x="90" y="240" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#ffffff">1,247</text>
+  
+  <rect x="140" y="210" width="80" height="40" rx="5" fill="#10b981"/>
+  <text x="180" y="225" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#ffffff">Consultas</text>
+  <text x="180" y="240" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#ffffff">89</text>
+  
+  <rect x="230" y="210" width="80" height="40" rx="5" fill="#f59e0b"/>
+  <text x="270" y="225" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#ffffff">Receita</text>
+  <text x="270" y="240" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#ffffff">R$ 45k</text>
+  
+  <!-- Status Indicators -->
+  <circle cx="350" cy="70" r="8" fill="#10b981"/>
+  <circle cx="370" cy="70" r="8" fill="#f59e0b"/>
+  <circle cx="390" cy="70" r="8" fill="#ef4444"/>
+  
+  <!-- Medical Icons -->
+  <circle cx="80" cy="80" r="12" fill="#3b82f6"/>
+  <text x="80" y="85" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#ffffff">📊</text>
+  
+  <circle cx="120" cy="80" r="12" fill="#10b981"/>
+  <text x="120" y="85" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#ffffff">💊</text>
+  
+  <circle cx="160" cy="80" r="12" fill="#f59e0b"/>
+  <text x="160" y="85" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#ffffff">🏥</text>
+  
+  <!-- Text Labels -->
+  <text x="200" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#1e293b">Monitoramento em Tempo Real</text>
+  <text x="200" y="280" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#64748b">Doctor NFS-e Dashboard</text>
+</svg>

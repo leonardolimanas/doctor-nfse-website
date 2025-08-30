@@ -1,0 +1,58 @@
+<svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="400" height="300" fill="#f8fafc"/>
+  
+  <!-- Medical Office -->
+  <rect x="50" y="100" width="300" height="150" rx="10" fill="#e2e8f0" stroke="#cbd5e1" stroke-width="2"/>
+  
+  <!-- Doctor -->
+  <circle cx="120" cy="180" r="25" fill="#3b82f6"/>
+  <rect x="110" y="200" width="20" height="30" fill="#3b82f6"/>
+  <circle cx="120" cy="175" r="15" fill="#ffffff"/>
+  <rect x="115" y="170" width="10" height="10" fill="#3b82f6"/>
+  
+  <!-- Patient -->
+  <circle cx="280" cy="180" r="20" fill="#10b981"/>
+  <rect x="275" y="195" width="10" height="25" fill="#10b981"/>
+  
+  <!-- Medical Equipment -->
+  <rect x="200" y="120" width="60" height="40" rx="5" fill="#f59e0b"/>
+  <circle cx="230" cy="140" r="8" fill="#ffffff"/>
+  <rect x="225" y="135" width="10" height="10" fill="#f59e0b"/>
+  
+  <!-- Charts and Data -->
+  <rect x="60" y="120" width="80" height="60" rx="5" fill="#8b5cf6"/>
+  <rect x="70" y="135" width="15" height="25" fill="#ffffff"/>
+  <rect x="90" y="140" width="15" height="20" fill="#ffffff"/>
+  <rect x="110" y="130" width="15" height="30" fill="#ffffff"/>
+  
+  <!-- Computer Screen -->
+  <rect x="250" y="110" width="80" height="50" rx="5" fill="#64748b"/>
+  <rect x="255" y="115" width="70" height="40" fill="#1e293b"/>
+  <circle cx="270" cy="135" r="3" fill="#10b981"/>
+  <rect x="275" y="130" width="20" height="2" fill="#10b981"/>
+  <rect x="275" y="135" width="15" height="2" fill="#10b981"/>
+  
+  <!-- Medical Documents -->
+  <rect x="320" y="200" width="20" height="30" fill="#ef4444"/>
+  <rect x="325" y="205" width="10" height="2" fill="#ffffff"/>
+  <rect x="325" y="210" width="10" height="2" fill="#ffffff"/>
+  <rect x="325" y="215" width="8" height="2" fill="#ffffff"/>
+  
+  <!-- Stethoscope -->
+  <path d="M 150 160 Q 170 150 190 160 Q 210 150 230 160" stroke="#1e293b" stroke-width="3" fill="none"/>
+  <circle cx="150" cy="160" r="8" fill="#1e293b"/>
+  <circle cx="230" cy="160" r="8" fill="#1e293b"/>
+  
+  <!-- Medical Icons -->
+  <circle cx="350" cy="80" r="15" fill="#f59e0b"/>
+  <path d="M 345 80 L 355 80 M 350 75 L 350 85" stroke="#ffffff" stroke-width="2"/>
+  
+  <!-- Success Indicators -->
+  <circle cx="80" cy="70" r="12" fill="#10b981"/>
+  <path d="M 75 70 L 78 73 L 85 66" stroke="#ffffff" stroke-width="2"/>
+  
+  <!-- Text Labels -->
+  <text x="200" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#1e293b">Gestão Médica Inteligente</text>
+  <text x="200" y="280" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#64748b">Doctor NFS-e</text>
+</svg>

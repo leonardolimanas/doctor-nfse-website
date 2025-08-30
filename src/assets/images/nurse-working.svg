@@ -1,0 +1,83 @@
+<svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="400" height="300" fill="#fef3c7"/>
+  
+  <!-- Medical Room -->
+  <rect x="30" y="80" width="340" height="200" rx="10" fill="#ffffff" stroke="#e5e7eb" stroke-width="2"/>
+  
+  <!-- Nurse Figure -->
+  <circle cx="120" cy="140" r="25" fill="#f59e0b"/>
+  <rect x="110" y="160" width="20" height="35" fill="#f59e0b"/>
+  
+  <!-- Nurse's Face -->
+  <circle cx="120" cy="135" r="18" fill="#fbbf24"/>
+  <circle cx="115" cy="130" r="3" fill="#1e293b"/>
+  <circle cx="125" cy="130" r="3" fill="#1e293b"/>
+  <path d="M 115 140 Q 120 145 125 140" stroke="#1e293b" stroke-width="2" fill="none"/>
+  
+  <!-- Nurse Cap -->
+  <ellipse cx="120" cy="115" rx="20" ry="8" fill="#ffffff"/>
+  <rect x="115" y="107" width="10" height="8" fill="#ffffff"/>
+  
+  <!-- Medical Equipment Tray -->
+  <rect x="200" y="150" width="100" height="60" rx="5" fill="#e2e8f0" stroke="#cbd5e1" stroke-width="2"/>
+  
+  <!-- Medical Instruments -->
+  <rect x="210" y="160" width="15" height="25" fill="#64748b"/>
+  <circle cx="217" cy="165" r="3" fill="#ffffff"/>
+  
+  <rect x="230" y="160" width="15" height="25" fill="#ef4444"/>
+  <circle cx="237" cy="165" r="3" fill="#ffffff"/>
+  
+  <rect x="250" y="160" width="15" height="25" fill="#10b981"/>
+  <circle cx="257" cy="165" r="3" fill="#ffffff"/>
+  
+  <!-- Syringe -->
+  <rect x="270" y="160" width="20" height="25" fill="#8b5cf6"/>
+  <rect x="275" y="165" width="10" height="15" fill="#ffffff"/>
+  <circle cx="280" cy="180" r="3" fill="#8b5cf6"/>
+  
+  <!-- Medical Monitor -->
+  <rect x="280" y="100" width="80" height="60" rx="5" fill="#1e293b"/>
+  <rect x="285" y="105" width="70" height="50" fill="#10b981"/>
+  
+  <!-- Monitor Screen -->
+  <circle cx="300" cy="125" r="8" fill="#ffffff"/>
+  <rect x="295" y="135" width="10" height="2" fill="#ffffff"/>
+  <rect x="295" y="140" width="15" height="2" fill="#ffffff"/>
+  <rect x="295" y="145" width="12" height="2" fill="#ffffff"/>
+  
+  <!-- Medical Charts -->
+  <rect x="50" y="100" width="60" height="40" rx="5" fill="#3b82f6"/>
+  <rect x="55" y="105" width="50" height="30" fill="#ffffff"/>
+  <rect x="60" y="110" width="15" height="8" fill="#3b82f6"/>
+  <rect x="80" y="110" width="15" height="8" fill="#3b82f6"/>
+  <rect x="60" y="125" width="15" height="8" fill="#3b82f6"/>
+  <rect x="80" y="125" width="15" height="8" fill="#3b82f6"/>
+  
+  <!-- Medical Cart -->
+  <rect x="320" y="200" width="40" height="30" fill="#64748b"/>
+  <circle cx="325" cy="230" r="5" fill="#1e293b"/>
+  <circle cx="355" cy="230" r="5" fill="#1e293b"/>
+  <rect x="330" y="205" width="20" height="15" fill="#f59e0b"/>
+  
+  <!-- Stethoscope -->
+  <path d="M 140 130 Q 160 120 180 130 Q 200 120 220 130" stroke="#1e293b" stroke-width="3" fill="none"/>
+  <circle cx="140" cy="130" r="6" fill="#1e293b"/>
+  <circle cx="220" cy="130" r="6" fill="#1e293b"/>
+  
+  <!-- Medical Icons -->
+  <circle cx="350" cy="70" r="15" fill="#10b981"/>
+  <text x="350" y="75" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#ffffff">🏥</text>
+  
+  <circle cx="80" cy="70" r="15" fill="#3b82f6"/>
+  <text x="80" y="75" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#ffffff">💊</text>
+  
+  <!-- Success Indicators -->
+  <circle cx="200" cy="70" r="15" fill="#f59e0b"/>
+  <text x="200" y="75" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#ffffff">📋</text>
+  
+  <!-- Text Labels -->
+  <text x="200" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#1e293b">Cuidado e Eficiência</text>
+  <text x="200" y="280" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#64748b">Profissionais de Saúde</text>
+</svg>
